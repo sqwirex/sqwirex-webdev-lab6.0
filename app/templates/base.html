@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Образовательный портал | Московский Политех</title>
+</head>
+<body class="d-flex flex-column h-100">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <img class="img-fluid me-2" style="height: 38px" src="{{ url_for('static', filename='images/polytech_logo.png') }}" alt="polytech-logo">
+                <span>Образовательный портал</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <div class="navbar-nav me-auto">
+                    <a class="nav-link" href="{{ url_for('index') }}">Главная</a>
+                    <a class="nav-link" href="{{ url_for('courses.index') }}">Каталог курсов</a>
+                </div>
+                {% if current_user.is_authenticated %}
+                    <div class="dropdown d-flex align-items-center ms-auto">
+                        <div class="profile me-2" title="{{ current_user.full_name }}" id="dropdownMenuButton" data-bs-toggle="dropdown">
+                            <img class="img-fluid rounded-circle cursor-pointer"
+                                 src="{{ url_for('static', filename='images/default-profile-picture-300x300.jpeg') }}"
+                                 alt="profile-pic" style="width: 42px; height: 42px; object-fit: cover;">
+                        </div>
+                        <button class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ current_user.full_name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><span class="dropdown-item-text text-muted">{{ current_user.login }}</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Выйти</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a class="btn btn-outline-light ms-auto" href="{{ url_for('auth.login') }}">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="alerts-area">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, msg in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show m-0 rounded-0" role="alert">
+                {{ msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+</div>
+
+<main class="main flex-grow-1">
+   {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-dark text-white d-flex align-items-center justify-content-center py-3 text-center px-3">
+    &copy; Московский Политех · Николаев Алексей Владимирович · группа 241-3211
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

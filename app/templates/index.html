@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="h-100 text-center d-flex p-3 bg-light">
+    <div class="m-auto w-100">
+        <h1 class="title mb-5 font-weight-bold">Образовательный портал</h1>
+        <div class="container">
+            <p class="description w-75 mb-5 px-3 mx-auto">
+                Мы создаем и продвигаем технологии онлайн-образования как эффективный образовательный инструмент,
+                который способствует повышению доступности и качества образования.
+            </p>
+            <div class="my-5 p-3 bg-dark rounded">
+                <form action="{{ url_for('courses.index') }}" class="row align-items-center">
+                    <div class="col-sm-12 mb-3 col-md-6 mb-md-0">
+                        <input autocomplete="off" type="text" class="form-control" id="course-name" name="name" placeholder="Название курса">
+                    </div>
+                    <div class="col-sm-12 mb-3 col-md-4 mb-md-0">
+                        <select class="form-select" id="course-category" name="category_ids" title="Категория курса">
+                            <option value="">Выберите категорию</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-md-2 align-self-end">
+                        <button type="submit" class="btn btn-outline-light w-100 mt-auto">Найти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">Новые курсы</h2>
+    <div class="row g-4">
+        {% for course in latest_courses %}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.name }}</h5>
+                        <p class="text-muted">{{ course.category.name }} · ★ {{ '%.2f'|format(course.rating) }}</p>
+                        <p class="card-text">{{ course.short_desc|truncate(120) }}</p>
+                        <a href="{{ url_for('courses.show', course_id=course.id) }}" class="btn btn-dark">Открыть курс</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

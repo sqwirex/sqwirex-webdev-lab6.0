@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="title-area position-relative {% if not course.bg_image %}title-area-placeholder{% endif %}" {% if course.bg_image %}style="background-image: url({{ course.bg_image.url }});"{% endif %}>
+    <div class="h-100 w-100 py-5 d-flex text-center position-absolute top-0 start-0" style="background-color: rgba(0, 0, 0, 0.65);">
+        <div class="m-auto text-white">
+            <h1 class="title mb-3 font-weight-bold">{{ course.name }}</h1>
+            <p class="mb-3 mx-auto">{{ course.category.name }} | <span>★</span> <span>{{ '%.2f' | format(course.rating) }}</span></p>
+            <div class="container">
+                <p class="description w-75 mb-4 mx-auto">{{ course.short_desc }}</p>
+            </div>
+            <a href="{{ url_for('courses.reviews', course_id=course.id) }}" class="btn btn-outline-light btn-lg">Все отзывы</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <section class="about mb-5">
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">О курсе</h2>
+        <p>{{ course.full_desc }}</p>
+    </section>
+
+    <section class="reviews mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="text-uppercase font-weight-bold mb-0">Последние отзывы</h2>
+            <a href="{{ url_for('courses.reviews', course_id=course.id) }}" class="btn btn-outline-dark">Все отзывы</a>
+        </div>
+        <div class="row g-4">
+            {% for review in latest_reviews %}
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between flex-wrap gap-2">
+                                <div>
+                                    <h5 class="mb-1">{{ review.user.full_name }}</h5>
+                                    <div class="text-muted small">{{ review.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</div>
+                                </div>
+                                <div class="fw-bold">Оценка: {{ review.rating }}/5</div>
+                            </div>
+                            <p class="mt-3 mb-0">{{ review.text }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">Пока нет отзывов. Станьте первым, кто оценит курс.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="review-create mb-5">
+        <h2 class="mb-3 text-uppercase font-weight-bold">Оставить отзыв</h2>
+        {% set next_endpoint = 'courses.show' %}
+        {% set sort_value = none %}
+        {% include 'courses/_review_form.html' %}
+    </section>
+</div>
+{% endblock %}
